@@ -187,14 +187,14 @@ footer a{color:#7dd3fc;text-decoration:none;font-weight:700}
           <div class="mini"><b id="miniWorking">—</b><span>Working</span></div>
           <div class="mini"><b id="miniFastest">—</b><span>Fastest reply</span></div>
           <div class="mini"><b id="connType">—</b><span>Connection</span></div>
-          <div class="mini"><b id="totalCount2">24</b><span>Servers listed</span></div>
+          <div class="mini"><b id="totalCount2">39</b><span>Servers listed</span></div>
         </div>
       </aside>
     </div>
   </section>
 
   <section class="stats" aria-label="Summary">
-    <div class="stat"><label>Working</label><strong><span id="statWorking">0</span> <small>/ <span id="statTotal">24</span></small></strong></div>
+    <div class="stat"><label>Working</label><strong><span id="statWorking">0</span> <small>/ <span id="statTotal">39</span></small></strong></div>
     <div class="stat"><label>Not reachable / blocked</label><strong id="statBad">0</strong></div>
     <div class="stat"><label>Average reply</label><strong><span id="statAvg">—</span><small id="statAvgUnit"></small></strong></div>
     <div class="stat"><label>Tested</label><strong><span id="statTested">0</span><small> servers</small></strong></div>
@@ -242,9 +242,10 @@ footer a{color:#7dd3fc;text-decoration:none;font-weight:700}
   </section>
 
   <footer>
-    BDIX Tester — made for Bangladesh broadband users. Server names &amp; hosts are the public listings shared by BDIX directories such as <a href="https://bdix.app/servers" target="_blank" rel="noopener">bdix.app/servers</a>.<br>
+    BDIX Tester — made for Bangladesh broadband users. Server names &amp; hosts are the public listings shared by BDIX directories such as <a href="https://bdix.app/servers" target="_blank" rel="noopener">bdix.app/servers</a> and <a href="https://www.bloggerbangladesh.com/2020/12/ftp-server-bd.html" target="_blank" rel="noopener">BloggerBangladesh — FTP Server BD</a>.<br>
     Single-file site — drop this <code style="font-family:JetBrains Mono,monospace">index.html</code> into a GitHub repo named <strong style="color:#cbd5e1">bdix-tester</strong> and enable GitHub Pages to host it free.
     <div><span class="made-by"><i aria-hidden="true"></i>Made by&nbsp;<span>Taifz</span></span></div>
+    <p class="footer-note" style="margin-top:12px;font-size:12.5px;color:var(--muted2);letter-spacing:.02em">IP Is Stored for education</p>
   </footer>
 </div>
 
@@ -273,6 +274,21 @@ var SERVERS=[
  {name:"Showtime BD",host:"showtimebd.com",openUrl:"http://showtimebd.com/",probe:["https://showtimebd.com/favicon.ico","http://showtimebd.com/favicon.ico"],cat:"Live TV",desc:"Live TV & entertainment listing — availability varies a lot by ISP.",priv:false},
  {name:"BDIX.app Directory",host:"bdix.app",openUrl:"https://bdix.app/servers",probe:["https://bdix.app/favicon.ico"],cat:"Mixed",desc:"Not a file server — the directory itself. If this opens, your internet is fine and the reds are BDIX / browser blocks.",priv:false},
  {name:"SAM FTP — Web",host:"samftp.com",openUrl:"https://samftp.com/",probe:["https://samftp.com/favicon.ico"],cat:"Movies & Series",desc:"SAM Online's public web address — alternative to the 172.16.50.4 private IP.",priv:false},
+ {name:"Crazy CTG",host:"crazyctg.com",openUrl:"http://crazyctg.com/",probe:["https://crazyctg.com/favicon.ico","http://crazyctg.com/favicon.ico"],cat:"Movies & Series",desc:"Chattogram-based BDIX favourite — movies and series, listed on the BloggerBangladesh FTP directory.",priv:false},
+ {name:"Carnival FTP",host:"103.106.238.74",openUrl:"http://103.106.238.74/",probe:["http://103.106.238.74/favicon.ico"],cat:"Movies & Series",desc:"Carnival Internet's BDIX FTP node — movies and series for Carnival users and peering ISPs.",priv:false},
+ {name:"Link3 — CineHub",host:"cinehub24.com",openUrl:"http://www.cinehub24.com/",probe:["https://www.cinehub24.com/favicon.ico","http://www.cinehub24.com/favicon.ico"],cat:"Movies & Series",desc:"Link3's CineHub24 — movie & entertainment hub for Link3 broadband users and peers.",priv:false},
+ {name:"VdoMela",host:"vdomela.com",openUrl:"http://vdomela.com/",probe:["https://vdomela.com/favicon.ico","http://vdomela.com/favicon.ico"],cat:"Movies & Series",desc:"Video Mela — long-listed BDIX entertainment server for movies and video content.",priv:false},
+ {name:"iHub",host:"ihub.live",openUrl:"http://ihub.live/",probe:["https://ihub.live/favicon.ico","http://ihub.live/favicon.ico"],cat:"Mixed",desc:"iHub Live — BDIX portal mixing movies, series and live content in one place.",priv:false},
+ {name:"Nagordola",host:"nagordola.com.bd",openUrl:"http://www.nagordola.com.bd/",probe:["https://www.nagordola.com.bd/favicon.ico","http://www.nagordola.com.bd/favicon.ico"],cat:"Movies & Series",desc:"Nagordola — well-known Bangladeshi entertainment & movie server on BDIX lists.",priv:false},
+ {name:"Ebox Live",host:"fs.ebox.live",openUrl:"http://fs.ebox.live/",probe:["https://fs.ebox.live/favicon.ico","http://fs.ebox.live/favicon.ico"],cat:"Mixed",desc:"Ebox Live file server — movies, series and mixed downloads, a regular on BDIX directories.",priv:false},
+ {name:"MovieBox BD",host:"movieboxbd.com",openUrl:"http://movieboxbd.com/",probe:["https://movieboxbd.com/favicon.ico","http://movieboxbd.com/favicon.ico"],cat:"Movies & Series",desc:"MovieBox BD — movie-focused BDIX server listed across Bangladesh FTP directories.",priv:false},
+ {name:"Movie Mela",host:"moviemela.live",openUrl:"http://www.moviemela.live/",probe:["https://www.moviemela.live/favicon.ico","http://www.moviemela.live/favicon.ico"],cat:"Movies & Series",desc:"Movie Mela Live — movies and entertainment, frequently listed for BDIX broadband users.",priv:false},
+ {name:"Dhaka Movie",host:"dhakamovie.com",openUrl:"http://www.dhakamovie.com/",probe:["https://www.dhakamovie.com/favicon.ico","http://www.dhakamovie.com/favicon.ico"],cat:"Movies & Series",desc:"Dhaka Movie — Bengali, Hindi and English movie library on the BDIX network.",priv:false},
+ {name:"DDNBD",host:"ddnbd.com",openUrl:"https://ddnbd.com/",probe:["https://ddnbd.com/favicon.ico"],cat:"Mixed",desc:"DDNBD — Dhaka Digital Network's mixed BDIX portal for movies, series and more.",priv:false},
+ {name:"SamBD",host:"sambd.com",openUrl:"https://sambd.com/",probe:["https://sambd.com/favicon.ico"],cat:"Movies & Series",desc:"SamBD — SAM Online's public BD brand, linked to the DhakaFlix / SAM library.",priv:false},
+ {name:"BDLAN",host:"bdlan.net",openUrl:"http://www.bdlan.net/",probe:["https://www.bdlan.net/favicon.ico","http://www.bdlan.net/favicon.ico"],cat:"Software & Games",desc:"BDLAN — long-running local server known for games, software and LAN sharing.",priv:false},
+ {name:"OnBDIX",host:"onbdix.com",openUrl:"http://onbdix.com/",probe:["https://onbdix.com/favicon.ico","http://onbdix.com/favicon.ico"],cat:"Mixed",desc:"OnBDIX — mixed BDIX portal collecting movies, series and downloads in one place.",priv:false},
+ {name:"DFNBD",host:"bn.dfnbd.net",openUrl:"http://bn.dfnbd.net/",probe:["https://bn.dfnbd.net/favicon.ico","http://bn.dfnbd.net/favicon.ico"],cat:"Movies & Series",desc:"DFNBD Bangla node — Bangla movies and content from the DFNBD network.",priv:false},
  {name:"Cloudflare (Control test)",host:"cloudflare.com",openUrl:"https://www.cloudflare.com/",probe:["https://www.cloudflare.com/favicon.ico"],cat:"Mixed",desc:"Control check: this should almost always be green. If it's red too, your own connection / browser is blocking the test.",priv:false}
 ];
 
