@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="dark"/>
+<link rel="icon" href="data:,"/>
+<title>BDIX Tester — Check Which BDIX Servers Work On Your Line</title>
+<meta name="description" content="Test famous Bangladesh BDIX FTP and media servers live from your own connection. See what's reachable, how fast it responds, and open it in one tap."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#020a12; --bg2:#041824; --abyss:#03121e;
+  --glass:rgba(255,255,255,.07); --glass2:rgba(255,255,255,.10); --stroke:rgba(255,255,255,.14); --stroke2:rgba(255,255,255,.08);
+  --text:#eef7f7; --muted:#9db8bc; --muted2:#6f8f94;
+  --teal:#2dd4bf; --cyan:#22d3ee; --ocean:#0ea5b7;
+  --crimson:#ff2438; --crimson2:#e11d2e; --crimsonGlow:rgba(255,36,56,.45);
+  --ok:#34d399; --okBg:rgba(52,211,153,.14);
+  --bad:#fb7185; --badBg:rgba(251,113,133,.12);
+  --warn:#fbbf24;
+  --radius:22px;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit} button,input,select{font:inherit}
+h1,h2,h3{font-family:Sora,Manrope,sans-serif;margin:0;line-height:.95;letter-spacing:-.03em}
+p{margin:0;line-height:1.6;color:var(--muted)}
+
+/* OCEAN + ABYSS BACKGROUND */
+.ocean-bg{position:fixed;inset:0;z-index:-3;background:radial-gradient(900px 520px at 15% -5%,rgba(34,211,238,.28),transparent 60%),radial-gradient(800px 500px at 90% 0%,rgba(225,29,46,.16),transparent 55%),linear-gradient(180deg,#062336 0%,#041824 34%,#020a12 78%)}
+.ocean-bg:before{content:"";position:absolute;inset:0;background:radial-gradient(600px 300px at 50% 110%,rgba(45,212,191,.18),transparent 70%);opacity:.9}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
+.bubbles{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.bubbles i{position:absolute;bottom:-40px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.25),transparent 60%);animation:rise linear infinite}
+.bubbles i:nth-child(1){left:8%;width:14px;height:14px;animation-duration:14s}.bubbles i:nth-child(2){left:22%;width:8px;height:8px;animation-duration:11s;animation-delay:2s}.bubbles i:nth-child(3){left:68%;width:18px;height:18px;animation-duration:17s;animation-delay:1s}.bubbles i:nth-child(4){left:84%;width:9px;height:9px;animation-duration:12s;animation-delay:4s}.bubbles i:nth-child(5){left:48%;width:6px;height:6px;animation-duration:10s;animation-delay:3s}.bubbles i:nth-child(6){left:92%;width:12px;height:12px;animation-duration:15s;animation-delay:.5s}
+@keyframes rise{to{transform:translateY(-110vh) translateX(18px)}}
+.waves{position:fixed;left:0;right:0;bottom:-6px;height:120px;z-index:-1;pointer-events:none;opacity:.55;overflow:hidden}
+.waves svg{width:200%;height:100%;animation:waveMove 14s linear infinite}
+.waves svg:nth-child(2){position:absolute;left:0;top:18px;opacity:.5;animation-duration:22s;animation-direction:reverse}
+@keyframes waveMove{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.waves svg,.bubbles i{animation:none} html{scroll-behavior:auto} *{transition:none!important}}
+
+.wrap{max-width:1180px;margin:0 auto;padding:22px 18px 90px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:6px 2px 18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}
+.brand-mark{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#0a0f14;border:1px solid rgba(255,255,255,.2);box-shadow:0 0 0 6px rgba(255,36,56,.08),0 0 28px var(--crimsonGlow);position:relative;overflow:hidden}
+.brand-mark:before{content:"";width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#ff6b7a 0 18%,#c8102e 32% 48%,#111 49% 62%,#e11d2e 63% 100%);box-shadow:inset 0 0 0 2px #000}
+.brand small{display:block;font-weight:600;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;font-size:11px}
+.top-pill{padding:9px 13px;border-radius:999px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(16px);font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok)}
+
+/* HERO GLASS */
+.hero{position:relative;border-radius:30px;padding:28px;background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04) 45%,rgba(255,36,56,.07));border:1px solid var(--stroke);backdrop-filter:blur(22px);box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18);overflow:hidden}
+.hero:after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,36,56,.28),transparent 65%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:22px;position:relative;z-index:1}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:7px 11px;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid var(--stroke2);font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.eyebrow b{color:#ff5a6a}
+.hero h1{font-size:clamp(44px,7vw,78px);margin-top:16px}
+.hero h1 span{color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.85)}
+.hero h1 em{font-style:normal;color:var(--teal);text-shadow:0 0 26px rgba(45,212,191,.45)}
+.hero-sub{margin-top:14px;font-size:17px;max-width:56ch}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btn{border:0;cursor:pointer;border-radius:999px;padding:14px 20px;font-weight:800;display:inline-flex;align-items:center;gap:9px;transition:.25s;text-decoration:none}
+.btn-primary{background:var(--crimson2);color:white;box-shadow:0 12px 30px rgba(225,29,46,.35)}
+.btn-primary:hover{transform:translateY(-2px);background:#f4263a;box-shadow:0 16px 34px rgba(225,29,46,.45)}
+.btn-glass{background:rgba(255,255,255,.09);color:var(--text);border:1px solid var(--stroke);backdrop-filter:blur(12px)}
+.btn-glass:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.eye-card{border-radius:24px;background:rgba(2,10,18,.52);border:1px solid var(--stroke2);padding:20px;backdrop-filter:blur(14px)}
+.ghoul-eye{width:118px;height:118px;margin:4px auto 14px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#0b0b0f 0 16%,#d9142a 17% 42%,#5c060f 43% 58%,#0a0a0c 59% 100%);border:3px solid rgba(255,255,255,.12);box-shadow:0 0 0 10px rgba(0,0,0,.35),0 0 44px rgba(255,36,56,.5),inset 0 0 24px #000;position:relative}
+.ghoul-eye:after{content:"";position:absolute;left:22%;top:14%;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.85);filter:blur(1px)}
+.eye-card h3{text-align:center;font-size:18px;letter-spacing:-.01em}
+.eye-card p{text-align:center;font-size:14px;margin-top:6px}
+.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.mini{padding:12px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid var(--stroke2);text-align:center}
+.mini b{font-family:JetBrains Mono,monospace;font-size:18px;display:block}
+.mini span{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+
+/* STATS STRIP */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.stat{padding:18px;border-radius:20px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(18px)}
+.stat label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.stat strong{font-family:Sora,sans-serif;font-size:32px;display:block;margin-top:6px}
+.stat strong small{font-size:14px;color:var(--muted);font-family:Manrope}
+.progress{height:10px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:14px;border:1px solid var(--stroke2)}
+.progress i{display:block;height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--cyan),#ff4757);transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-weight:700;margin-top:8px}
+
+/* CONTROLS */
+.controls{margin-top:18px;padding:16px;border-radius:22px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:14px}
+.search-row{display:grid;grid-template-columns:1fr auto auto;gap:10px}
+.search{position:relative}
+.search input{width:100%;padding:14px 16px 14px 44px;border-radius:999px;border:1px solid var(--stroke);background:rgba(0,0,0,.28);color:var(--text);outline:none}
+.search input:focus{border-color:rgba(45,212,191,.6);box-shadow:0 0 0 4px rgba(45,212,191,.12)}
+.search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:.7}
+.select{padding:0 14px;border-radius:999px;border:1px solid var(--stroke);background:rgba(0,0,0,.28);color:var(--text);min-height:48px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:9px 14px;border-radius:999px;border:1px solid var(--stroke);background:rgba(255,255,255,.05);color:var(--muted);font-weight:800;cursor:pointer;transition:.2s}
+.pill.active{background:white;color:#041824;border-color:white}
+.pill:hover{color:var(--text);border-color:rgba(255,255,255,.35)} .pill.active:hover{color:#041824}
+
+/* NOTE */
+.note{margin-top:14px;padding:16px 18px;border-radius:18px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.22);display:flex;gap:12px}
+.note strong{color:#fde68a}
+.note p{color:#d6c9a3;font-size:14px}
+
+/* GRID */
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:28px 2px 14px;flex-wrap:wrap}
+.section-head h2{font-size:28px}
+.section-head p{font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{padding:18px;border-radius:22px;background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.04));border:1px solid var(--stroke);backdrop-filter:blur(18px);transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s;animation:fadeUp .55s both;animation-delay:calc(var(--i)*45ms)}
+.card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.28);box-shadow:0 18px 36px rgba(0,0,0,.32)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card h3{font-size:19px;letter-spacing:-.02em}
+.host{font-family:JetBrains Mono,monospace;font-size:12.5px;color:#a5d8dc;margin-top:6px;word-break:break-all}
+.badge{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--stroke2);white-space:nowrap;color:var(--muted)}
+.desc{font-size:14px;margin-top:10px;min-height:42px}
+.status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--stroke2)}
+.status{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:13px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.06)}
+.status i{width:9px;height:9px;border-radius:50%;background:#94a3b8;flex:none}
+.status.checking i{background:var(--warn);box-shadow:0 0 10px var(--warn);animation:pulse 1s infinite}
+.status.ok{background:var(--okBg);color:#a7f3d0}.status.ok i{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.status.bad{background:var(--badBg);color:#fecdd3}.status.bad i{background:var(--bad);box-shadow:0 0 10px rgba(251,113,133,.7)}
+@keyframes pulse{50%{opacity:.35}}
+.latency{font-family:JetBrains Mono,monospace;font-weight:700;font-size:14px;color:var(--text);text-align:right}
+.latency span{display:block;font-family:Manrope;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.card-actions{display:flex;gap:8px;margin-top:14px}
+.open-btn{flex:1;text-align:center;padding:11px 12px;border-radius:999px;background:white;color:#041824;font-weight:800;text-decoration:none;transition:.2s}
+.open-btn:hover{background:var(--teal)}
+.retest{padding:11px 14px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid var(--stroke);color:var(--text);font-weight:800;cursor:pointer}
+.retest:hover{background:rgba(255,255,255,.13)}
+.tag-private{font-size:12px;color:#fda4af;margin-top:8px;font-weight:700}
+
+.empty{grid-column:1/-1;text-align:center;padding:36px;border-radius:22px;background:var(--glass);border:1px dashed var(--stroke)}
+.how{margin-top:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.how article{padding:20px;border-radius:20px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(16px)}
+.how b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,36,56,.16);border:1px solid rgba(255,36,56,.3);color:#ffb4bc;margin-bottom:12px}
+.how h3{font-size:17px;margin-bottom:6px}.how p{font-size:14px}
+footer{margin-top:28px;text-align:center;color:var(--muted2);font-size:13px;line-height:1.7}
+footer a{color:#7dd3fc;text-decoration:none;font-weight:700}
+.made-by{margin-top:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(16px);font-family:Sora,Manrope,sans-serif;font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--text)}
+.made-by span{color:var(--teal)}
+.made-by i{width:8px;height:8px;border-radius:50%;background:var(--crimson);box-shadow:0 0 12px var(--crimsonGlow);flex:none}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.how{grid-template-columns:1fr}}
+@media(max-width:600px){.wrap{padding:14px 12px 70px}.hero{padding:20px;border-radius:24px}.grid{grid-template-columns:1fr}.search-row{grid-template-columns:1fr}.select{width:100%}.hero h1{font-size:46px}.stat strong{font-size:26px}.card-actions{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="ocean-bg"></div>
+<div class="bubbles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="waves" aria-hidden="true">
+  <svg viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,64 C240,110 360,10 600,54 C840,98 960,20 1200,64 L1200,120 L0,120 Z" fill="rgba(34,211,238,.14)"/></svg>
+  <svg viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,70 C200,20 400,110 600,60 C800,10 1000,100 1200,55 L1200,120 L0,120 Z" fill="rgba(45,212,191,.10)"/></svg>
+</div>
+
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark" aria-hidden="true"></div><div>BDIX TESTER<small>Bangladesh • Live from your line</small></div></div>
+    <div class="top-pill"><span class="dot" id="onlineDot"></span><span id="onlineText">Checking your connection…</span></div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow"><b>●</b> Tokyo Ghoul × Deep Ocean</span>
+        <h1>Which BDIX<br><span>servers are</span><br><em>alive for you?</em></h1>
+        <p class="hero-sub">One tap tests the famous BDIX FTP &amp; media servers from <strong style="color:#fff">your own browser and ISP</strong> — not from a remote server. See what opens, how fast it answers, and jump straight in.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="runBtn">▶ &nbsp;Run full test</button>
+          <button class="btn btn-glass" id="retestWorkingBtn">↻ Re-test working only</button>
+          <a class="btn btn-glass" href="#servers">Browse servers ↓</a>
+        </div>
+        <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+        <div class="progress-label"><span id="progressText" aria-live="polite">Ready — test starts automatically</span><span id="progressPct">0%</span></div>
+      </div>
+      <aside class="eye-card" aria-label="Ghoul eye status">
+        <div class="ghoul-eye" aria-hidden="true"></div>
+        <h3>The eye sees your line only</h3>
+        <p>A server green here means <em>your</em> ISP can reach it right now. Another house, another ISP — different result.</p>
+        <div class="mini-stats">
+          <div class="mini"><b id="miniWorking">—</b><span>Working</span></div>
+          <div class="mini"><b id="miniFastest">—</b><span>Fastest reply</span></div>
+          <div class="mini"><b id="connType">—</b><span>Connection</span></div>
+          <div class="mini"><b id="totalCount2">24</b><span>Servers listed</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Summary">
+    <div class="stat"><label>Working</label><strong><span id="statWorking">0</span> <small>/ <span id="statTotal">24</span></small></strong></div>
+    <div class="stat"><label>Not reachable / blocked</label><strong id="statBad">0</strong></div>
+    <div class="stat"><label>Average reply</label><strong><span id="statAvg">—</span><small id="statAvgUnit"></small></strong></div>
+    <div class="stat"><label>Tested</label><strong><span id="statTested">0</span><small> servers</small></strong></div>
+  </section>
+
+  <div class="note" role="note">
+    <span aria-hidden="true">⚠</span>
+    <p><strong>Read this before trusting a red result:</strong> BDIX access depends entirely on your ISP's peering. Also, if you open this page over <strong>HTTPS</strong>, your browser may block checks to plain <strong>HTTP</strong> and private-IP servers (like 10.x / 172.16.x) as “mixed content” — so <strong>“blocked / not reachable” does not prove the server is down</strong>. Tap <strong>Open</strong> to try it directly, or open this page over HTTP / from your ISP's local network for the cleanest test.</p>
+  </div>
+
+  <section class="controls" aria-label="Search and filters">
+    <div class="search-row">
+      <label class="search"><span class="sr-only">Search servers</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="searchInput" type="search" placeholder="Search — Circle, ICC, DhakaFlix, 10.16…, movies…" autocomplete="off"/>
+      </label>
+      <select class="select" id="statusFilter" aria-label="Filter by status">
+        <option value="all">All statuses</option><option value="ok">Working only</option><option value="bad">Not reachable only</option><option value="idle">Not tested yet</option>
+      </select>
+      <select class="select" id="sortSelect" aria-label="Sort servers">
+        <option value="default">Sort: Featured</option><option value="fastest">Sort: Fastest first</option><option value="name">Sort: Name A–Z</option>
+      </select>
+    </div>
+    <div class="pills" id="catPills" role="group" aria-label="Category filter">
+      <button class="pill active" data-cat="all">All</button>
+      <button class="pill" data-cat="Movies & Series">Movies &amp; Series</button>
+      <button class="pill" data-cat="Live TV">Live TV</button>
+      <button class="pill" data-cat="Mixed">Mixed / All-in-one</button>
+      <button class="pill" data-cat="Software & Games">Software &amp; Games</button>
+    </div>
+  </section>
+
+  <div class="section-head" id="servers">
+    <div><h2>BDIX servers</h2><p id="showingText">Showing all servers</p></div>
+    <button class="btn btn-glass" id="copyBtn" style="padding:11px 16px">Copy working list</button>
+  </div>
+
+  <main class="grid" id="grid" aria-live="polite"></main>
+  <p id="copyMsg" style="text-align:center;margin-top:12px;font-size:14px;color:#5eead4;font-weight:700"></p>
+
+  <section class="how" aria-label="How to read results">
+    <article><b>1</b><h3>Test from your line</h3><p>Your browser pings each server directly. No middleman, no fake list — if your ISP doesn't peer to it, it won't answer for you.</p></article>
+    <article><b>2</b><h3>Green ≠ guaranteed login</h3><p>Green means the host responded. Some servers still need a login, registration, or your ISP's DNS. Use Open to go to the real homepage.</p></article>
+    <article><b>3</b><h3>Mobile data is different</h3><p>Most BDIX FTP servers only work on broadband Wi-Fi from a peering ISP. On mobile data, expect most private-IP servers to stay red.</p></article>
+  </section>
+
+  <footer>
+    BDIX Tester — made for Bangladesh broadband users. Server names &amp; hosts are the public listings shared by BDIX directories such as <a href="https://bdix.app/servers" target="_blank" rel="noopener">bdix.app/servers</a>.<br>
+    Single-file site — drop this <code style="font-family:JetBrains Mono,monospace">index.html</code> into a GitHub repo named <strong style="color:#cbd5e1">bdix-tester</strong> and enable GitHub Pages to host it free.
+    <div><span class="made-by"><i aria-hidden="true"></i>Made by&nbsp;<span>Taifz</span></span></div>
+  </footer>
+</div>
+
+<script>
+var SERVERS=[
+ {name:"Circle FTP",host:"15.1.1.1  •  circleftp.net",openUrl:"http://15.1.1.1/",probe:["https://circleftp.net/favicon.ico","http://15.1.1.1/favicon.ico"],cat:"Movies & Series",desc:"One of the largest BDIX catalogs — Hindi, Bengali & Hollywood movies, series and live TV.",priv:false},
+ {name:"ICC FTP",host:"10.16.100.244",openUrl:"http://10.16.100.244/",probe:["http://10.16.100.244/favicon.ico"],cat:"Mixed",desc:"Longest-running BDIX server — movies, series, live TV, software and games in one place.",priv:true},
+ {name:"SAM Online — DhakaFlix",host:"172.16.50.4  •  samftp.com",openUrl:"http://172.16.50.4/",probe:["http://172.16.50.4/favicon.ico","https://samftp.com/favicon.ico"],cat:"Movies & Series",desc:"Very popular and usually well updated — DhakaFlix / SAM Online movie & series library.",priv:true},
+ {name:"FTPBD",host:"ftpbd.net  •  103.58.73.9",openUrl:"https://ftpbd.net/",probe:["https://ftpbd.net/favicon.ico","http://103.58.73.9/favicon.ico"],cat:"Mixed",desc:"Business Network BD's FTPBD — movies, series, software with server1 / server4 mirrors.",priv:false},
+ {name:"Discovery FTP — Dflix",host:"discoveryftp.net",openUrl:"https://discoveryftp.net/",probe:["https://discoveryftp.net/favicon.ico"],cat:"Movies & Series",desc:"Large catalog, login / registration based, with CDN nodes cds1–cds3 for faster delivery.",priv:false},
+ {name:"KhulnaFlix",host:"khulnaflix.net  •  103.153.175.254",openUrl:"https://khulnaflix.net/",probe:["https://khulnaflix.net/favicon.ico","http://103.153.175.254/favicon.ico"],cat:"Movies & Series",desc:"Strong for movies — a favourite outside Dhaka with a clean, fast library.",priv:false},
+ {name:"NaturalBD",host:"naturalbd.com  •  103.43.148.68",openUrl:"https://naturalbd.com/",probe:["https://naturalbd.com/favicon.ico","http://103.43.148.68/favicon.ico"],cat:"Movies & Series",desc:"Good for new releases — movies and series updated frequently.",priv:false},
+ {name:"Race FTP — Moviedom",host:"moviedom.live  •  59.152.101.198",openUrl:"https://moviedom.live/",probe:["https://moviedom.live/favicon.ico","http://59.152.101.198/favicon.ico"],cat:"Movies & Series",desc:"Race Online's Moviedom — movies and series for Race broadband users and peers.",priv:false},
+ {name:"TimePass BD",host:"timepassbd.live",openUrl:"https://timepassbd.live/",probe:["https://timepassbd.live/favicon.ico"],cat:"Movies & Series",desc:"Movies, series and entertainment — a common name on BDIX directory lists.",priv:false},
+ {name:"FunTime BD",host:"funtimebd.com",openUrl:"http://funtimebd.com/",probe:["https://funtimebd.com/favicon.ico","http://funtimebd.com/favicon.ico"],cat:"Mixed",desc:"Movies, live TV and entertainment portal listed across BDIX directories.",priv:false},
+ {name:"Bioscope Live",host:"bioscopelive.com",openUrl:"https://www.bioscopelive.com/",probe:["https://www.bioscopelive.com/favicon.ico"],cat:"Live TV",desc:"Grameenphone's streaming platform — live TV and video, often fast on local routes.",priv:false},
+ {name:"JagoBD",host:"jagobd.com",openUrl:"https://www.jagobd.com/",probe:["https://www.jagobd.com/favicon.ico"],cat:"Live TV",desc:"Bangladeshi live TV streaming — news, sports and entertainment channels.",priv:false},
+ {name:"DhakaFlix (SAM mirror)",host:"dhakaflix.com",openUrl:"https://dhakaflix.com/",probe:["https://dhakaflix.com/favicon.ico"],cat:"Movies & Series",desc:"Public-facing DhakaFlix entry point linked with the SAM Online library.",priv:false},
+ {name:"Circle Network — Web",host:"circleftp.net",openUrl:"https://circleftp.net/",probe:["https://circleftp.net/favicon.ico"],cat:"Mixed",desc:"Circle Network's web portal — use this if the 15.1.1.1 IP is blocked by your browser.",priv:false},
+ {name:"FTPBD — Server 1",host:"server1.ftpbd.net",openUrl:"http://server1.ftpbd.net/",probe:["https://server1.ftpbd.net/favicon.ico","http://server1.ftpbd.net/favicon.ico"],cat:"Software & Games",desc:"FTPBD mirror 1 — often where software, games and larger files are hosted.",priv:false},
+ {name:"FTPBD — Server 4",host:"server4.ftpbd.net",openUrl:"http://server4.ftpbd.net/",probe:["https://server4.ftpbd.net/favicon.ico","http://server4.ftpbd.net/favicon.ico"],cat:"Movies & Series",desc:"FTPBD mirror 4 — movie & series mirror, try this if the main site is slow.",priv:false},
+ {name:"Discovery — CDS 1",host:"cds1.discoveryftp.net",openUrl:"https://discoveryftp.net/",probe:["https://cds1.discoveryftp.net/favicon.ico"],cat:"Movies & Series",desc:"Discovery FTP content delivery node 1 — direct CDN host behind Dflix.",priv:false},
+ {name:"MovieHaat",host:"moviehaat.net",openUrl:"http://moviehaat.net/",probe:["https://moviehaat.net/favicon.ico","http://moviehaat.net/favicon.ico"],cat:"Movies & Series",desc:"Movie-focused BDIX listing — Bengali, Hindi and English movies.",priv:false},
+ {name:"CTG Movies",host:"ctgmovies.com",openUrl:"http://ctgmovies.com/",probe:["https://ctgmovies.com/favicon.ico","http://ctgmovies.com/favicon.ico"],cat:"Movies & Series",desc:"Chattogram-based movie server frequently listed in BDIX directories.",priv:false},
+ {name:"Mojaloss",host:"mojaloss.com",openUrl:"https://mojaloss.com/",probe:["https://mojaloss.com/favicon.ico"],cat:"Mixed",desc:"Entertainment & download portal that appears on many BDIX server lists.",priv:false},
+ {name:"Showtime BD",host:"showtimebd.com",openUrl:"http://showtimebd.com/",probe:["https://showtimebd.com/favicon.ico","http://showtimebd.com/favicon.ico"],cat:"Live TV",desc:"Live TV & entertainment listing — availability varies a lot by ISP.",priv:false},
+ {name:"BDIX.app Directory",host:"bdix.app",openUrl:"https://bdix.app/servers",probe:["https://bdix.app/favicon.ico"],cat:"Mixed",desc:"Not a file server — the directory itself. If this opens, your internet is fine and the reds are BDIX / browser blocks.",priv:false},
+ {name:"SAM FTP — Web",host:"samftp.com",openUrl:"https://samftp.com/",probe:["https://samftp.com/favicon.ico"],cat:"Movies & Series",desc:"SAM Online's public web address — alternative to the 172.16.50.4 private IP.",priv:false},
+ {name:"Cloudflare (Control test)",host:"cloudflare.com",openUrl:"https://www.cloudflare.com/",probe:["https://www.cloudflare.com/favicon.ico"],cat:"Mixed",desc:"Control check: this should almost always be green. If it's red too, your own connection / browser is blocking the test.",priv:false}
+];
+
+var state={}; // id -> {status:'idle'|'checking'|'ok'|'bad', ms:null|number}
+SERVERS.forEach(function(s,i){s.id=i; state[i]={status:'idle',ms:null};});
+var activeCat='all', running=false;
+
+var grid=document.getElementById('grid');
+function statusLabel(st){
+ if(st==='ok') return '● Working';
+ if(st==='bad') return '● Blocked / Not reachable';
+ if(st==='checking') return '● Checking…';
+ return '○ Not tested';
+}
+function render(){
+ var q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
+ var sf=document.getElementById('statusFilter').value;
+ var sort=document.getElementById('sortSelect').value;
+ var list=SERVERS.slice();
+ if(sort==='fastest'){list.sort(function(a,b){var am=state[a.id].ms==null?999999:state[a.id].ms;var bm=state[b.id].ms==null?999999:state[b.id].ms;return am-bm;});}
+ if(sort==='name'){list.sort(function(a,b){return a.name.localeCompare(b.name);});}
+ var visible=0;
+ grid.innerHTML='';
+ list.forEach(function(s,idx){
+   var st=state[s.id];
+   var hay=(s.name+' '+s.host+' '+s.cat+' '+s.desc).toLowerCase();
+   if(q && hay.indexOf(q)===-1) return;
+   if(activeCat!=='all' && s.cat!==activeCat) return;
+   if(sf!=='all' && st.status!==sf){ if(!(sf==='idle'&&st.status==='idle')) return; }
+   visible++;
+   var card=document.createElement('article'); card.className='card'; card.style.setProperty('--i',idx);
+   var statusClass=st.status==='ok'?'ok':st.status==='bad'?'bad':st.status==='checking'?'checking':'';
+   var msText=st.ms!=null? st.ms+' ms' : '—';
+   card.innerHTML=
+     '<div class="card-top"><div><h3>'+escapeHtml(s.name)+'</h3><div class="host">'+escapeHtml(s.host)+'</div></div><span class="badge">'+escapeHtml(s.cat)+'</span></div>'+
+     '<p class="desc">'+escapeHtml(s.desc)+'</p>'+
+     (s.priv?'<div class="tag-private">Private IP — HTTPS pages often block this check</div>':'')+
+     '<div class="status-row"><span class="status '+statusClass+'"><i></i>'+statusLabel(st.status)+'</span><div class="latency">'+msText+'<span>Response</span></div></div>'+
+     '<div class="card-actions"><a class="open-btn" href="'+s.openUrl+'" target="_blank" rel="noopener">Open server ↗</a><button class="retest" data-id="'+s.id+'">Re-test</button></div>';
+   grid.appendChild(card);
+ });
+ if(visible===0){grid.innerHTML='<div class="empty"><h3 style="font-size:20px;margin-bottom:6px">No servers match that filter</h3><p>Try a different search or category — or run a full test first.</p></div>';}
+ document.getElementById('showingText').textContent='Showing '+visible+' of '+SERVERS.length+' servers';
+ updateStats();
+ // bind retest
+ var btns=grid.querySelectorAll('.retest');
+ for(var i=0;i<btns.length;i++){btns[i].addEventListener('click',function(){var id=parseInt(this.getAttribute('data-id'),10); testOne(SERVERS[id]).then(render);});}
+}
+function escapeHtml(t){return t.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function updateStats(){
+ var ok=0,bad=0,tested=0,sum=0,cnt=0,fastest=null;
+ SERVERS.forEach(function(s){var st=state[s.id]; if(st.status==='ok'){ok++;tested++;} if(st.status==='bad'){bad++;tested++;} if(st.ms!=null){sum+=st.ms;cnt++; if(fastest===null||st.ms<fastest) fastest=st.ms;}});
+ document.getElementById('statWorking').textContent=ok;
+ document.getElementById('statTotal').textContent=SERVERS.length;
+ document.getElementById('statBad').textContent=bad;
+ document.getElementById('statTested').textContent=tested;
+ document.getElementById('miniWorking').textContent=tested? ok+' / '+SERVERS.length : '—';
+ document.getElementById('miniFastest').textContent=fastest!=null? fastest+' ms':'—';
+ document.getElementById('totalCount2').textContent=SERVERS.length;
+ if(cnt){document.getElementById('statAvg').textContent=Math.round(sum/cnt); document.getElementById('statAvgUnit').textContent=' ms';} else {document.getElementById('statAvg').textContent='—'; document.getElementById('statAvgUnit').textContent='';}
+ var pct=tested? Math.round(tested/SERVERS.length*100):0;
+ if(!running){document.getElementById('progressBar').style.width=pct+'%'; document.getElementById('progressPct').textContent=pct+'%';}
+}
+
+function probeUrl(url,timeoutMs){
+ return new Promise(function(resolve){
+   var start=performance.now(); var done=false;
+   var ctrl=('AbortController' in window)? new AbortController():null;
+   var timer=setTimeout(function(){if(ctrl)try{ctrl.abort();}catch(e){} if(!done){done=true; resolve({ok:false,ms:null});}},timeoutMs);
+   var opts={mode:'no-cors',cache:'no-store',redirect:'follow'};
+   if(ctrl) opts.signal=ctrl.signal;
+   fetch(url,opts).then(function(){if(done)return; done=true; clearTimeout(timer); resolve({ok:true,ms:Math.max(1,Math.round(performance.now()-start))});})
+   .catch(function(){
+     // Fallback: image probe (some servers block fetch but serve favicon/img)
+     var img=new Image(); var istart=performance.now();
+     var itimer=setTimeout(function(){if(done)return; done=true; clearTimeout(timer); resolve({ok:false,ms:null});}, Math.max(800, timeoutMs-600));
+     img.onload=function(){if(done)return; done=true; clearTimeout(timer); clearTimeout(itimer); resolve({ok:true,ms:Math.max(1,Math.round(performance.now()-istart))});};
+     img.onerror=function(){
+       // An error from an <img> on a reachable http server can still mean it responded (404 etc.)
+       // We only count it as reachable if it failed very fast from an https probe is ambiguous — treat as not reachable.
+       if(done)return; done=true; clearTimeout(timer); clearTimeout(itimer); resolve({ok:false,ms:null});
+     };
+     img.src=url+(url.indexOf('?')===-1?'?':'&')+'bdixprobe='+Date.now();
+   });
+ });
+}
+async function testOne(server){
+ state[server.id]={status:'checking',ms:null}; render();
+ var best=null;
+ for(var i=0;i<server.probe.length;i++){
+   var r=await probeUrl(server.probe[i],4500);
+   if(r.ok){best=r.ms; break;}
+ }
+ state[server.id]= best!=null? {status:'ok',ms:best} : {status:'bad',ms:null};
+ return state[server.id];
+}
+async function runAll(onlyWorking){
+ if(running) return; running=true;
+ var btn=document.getElementById('runBtn'); btn.disabled=true; btn.textContent='◌ Testing from your line…';
+ var targets=SERVERS.filter(function(s){return !onlyWorking || state[s.id].status==='ok';});
+ if(onlyWorking && targets.length===0) targets=SERVERS.slice();
+ var doneCount=0;
+ document.getElementById('progressText').textContent='Testing '+targets.length+' servers — batches of 4, fastest route first…';
+ // reset targets
+ targets.forEach(function(s){state[s.id]={status:'checking',ms:null};}); render();
+ var idx=0;
+ async function worker(){
+   while(idx<targets.length){ var cur=targets[idx++]; await testOne(cur); doneCount++; var pct=Math.round(doneCount/targets.length*100); document.getElementById('progressBar').style.width=pct+'%'; document.getElementById('progressPct').textContent=pct+'%'; document.getElementById('progressText').textContent='Tested '+doneCount+' / '+targets.length+' — '+cur.name+' done'; render(); }
+ }
+ await Promise.all([worker(),worker(),worker(),worker()]);
+ var okc=SERVERS.filter(function(s){return state[s.id].status==='ok';}).length;
+ document.getElementById('progressText').textContent='Done — '+okc+' of '+SERVERS.length+' servers responded from your connection.';
+ btn.disabled=false; btn.innerHTML='▶ &nbsp;Run full test again'; running=false; render();
+}
+
+// Controls
+document.getElementById('runBtn').addEventListener('click',function(){runAll(false);});
+document.getElementById('retestWorkingBtn').addEventListener('click',function(){runAll(true);});
+document.getElementById('searchInput').addEventListener('input',render);
+document.getElementById('statusFilter').addEventListener('change',render);
+document.getElementById('sortSelect').addEventListener('change',render);
+document.getElementById('catPills').addEventListener('click',function(e){if(e.target.classList.contains('pill')){var pills=this.querySelectorAll('.pill'); for(var i=0;i<pills.length;i++)pills[i].classList.remove('active'); e.target.classList.add('active'); activeCat=e.target.getAttribute('data-cat'); render();}});
+document.getElementById('copyBtn').addEventListener('click',function(){
+ var working=SERVERS.filter(function(s){return state[s.id].status==='ok';});
+ var txt=working.length? working.map(function(s){return s.name+' — '+s.openUrl+' ('+state[s.id].ms+' ms)';}).join('\n') : 'No working servers yet — run a test first.';
+ var msg=document.getElementById('copyMsg');
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('BDIX Tester — working on my line:\n'+txt).then(function(){msg.textContent=working.length? 'Copied '+working.length+' working servers to clipboard.':'Run a test first, then copy.'; setTimeout(function(){msg.textContent='';},3500);});}
+ else{msg.textContent=txt;}
+});
+
+// Connection info
+function updateOnline(){var on=navigator.onLine; document.getElementById('onlineText').textContent=on?'You are online — test uses this connection':'You appear offline'; document.getElementById('onlineDot').style.background=on?'var(--ok)':'var(--bad)';}
+window.addEventListener('online',updateOnline); window.addEventListener('offline',updateOnline); updateOnline();
+try{var c=navigator.connection; document.getElementById('connType').textContent=c?(c.effectiveType||'—').toUpperCase():'Wi-Fi / LAN';}catch(e){document.getElementById('connType').textContent='—';}
+
+render();
+setTimeout(function(){runAll(false);},700);
+</script>
+</body>
+</html>
